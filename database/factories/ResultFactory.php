@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Student;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,7 +19,7 @@ class ResultFactory extends Factory
     {
         return [
             'exam_id' => \App\Models\Exam::all()->random()->id,
-            'student_code' => $this->faker->unique()->numerify('STU#####'),
+            'student_code' => Student::all()->random()->code,
             'score' => $this->faker->numberBetween(0, 100),
             'status' => $this->faker->randomElement(['passed', 'failed']),
             'submitted_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
