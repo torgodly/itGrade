@@ -12,10 +12,10 @@ return new class extends Migration {
     {
         Schema::create('results', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('exam_id')->constrained()->onDelete('cascade');
-            $table->foreignId('student_id')->constrained()->onDelete('cascade');
+            $table->foreignId('exam_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('student_id')->nullable()->constrained()->onDelete('cascade');
             $table->json('answers')->nullable(); // Store answers as JSON
-            $table->string('status')->default('pending'); // Status can be 'pending', 'passed', or 'failed'
+            $table->string('status')->nullable()->default('pending'); // Status can be 'pending', 'passed', or 'failed'
             $table->dateTime('submitted_at')->nullable(); // Store the submission time
             $table->timestamps();
         });

@@ -9,6 +9,7 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Table;
 use Icetalker\FilamentTableRepeatableEntry\Infolists\Components\TableRepeatableEntry;
 use Illuminate\Support\HtmlString;
@@ -60,6 +61,10 @@ class ResultsRelationManager extends RelationManager
                     )
                     ->sortable()
                     ->searchable(),
+
+                SpatieMediaLibraryImageColumn::make('exam_paper')
+                    ->collection('exam_paper')
+
             ])
             ->filters([
                 //
@@ -139,6 +144,38 @@ class ResultsRelationManager extends RelationManager
                         // Logic to add exam result
                     })
                     ->icon('heroicon-o-plus'),
+
+                Tables\Actions\Action::make('upload_exam_papers')
+                    ->label('Upload Exam Papers')
+                    ->slideOver()
+                    ->form([
+                        Forms\Components\FileUpload::make('exam_papers')
+                            ->label('Upload Exam Papers')
+                            ->image()
+                            ->multiple()
+                            ->required()
+                            ->helperText('Upload the exam papers')
+                    ])
+                    ->action(function ($data) {
+                        $examPapers = $data['exam_papers']; // array of filenames, e.g. ['01JZBP3MKP6QJ4H55FCRV5Z511.png', ...]
+
+                        foreach ($examPapers as $examPaper) {
+                            $filePath = storage_path('app/public/' . $examPaper);
+
+                            if (!file_exists($filePath)) {
+                                throw new \Exception("File does not exist: " . $filePath);
+                            }
+
+                            $result = $this->getOwnerRecord()->results()->create([
+                                'student_id' => auth()->user()->id,
+                                'status' => 'pending',
+                                'submitted_at' => now(),
+                            ]);
+
+                            $result->addMedia($filePath)->toMediaCollection('exam_paper');
+                        }
+                    })
+
 
             ])
             ->actions([
