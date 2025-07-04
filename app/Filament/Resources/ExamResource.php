@@ -16,7 +16,9 @@ class ExamResource extends Resource
 {
     protected static ?string $model = Exam::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'tabler-writing';
+
+    protected static ?string $navigationGroup = 'Academics';
 
     public static function form(Form $form): Form
     {
