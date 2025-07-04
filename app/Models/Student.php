@@ -13,6 +13,6 @@ class Student extends Model
 
     public function results(): HasMany
     {
-        return $this->hasMany(Result::class, 'student_code', 'code');
+        return $this->hasMany(Result::class);
     }
 }

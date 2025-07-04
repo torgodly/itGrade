@@ -26,8 +26,8 @@ class DatabaseSeeder extends Seeder
         ]);
         Course::factory(30)->create();
         Exam::factory(30)->create();
-        Student::factory(30)->create();
-        Result::factory(30)->create();
+        Student::factory(10)->create();
+        Result::factory(300)->create();
 
 
 

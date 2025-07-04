@@ -17,8 +17,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->dateTime('data');
             $table->foreignId('course_id')->constrained();
-            //correct answers and scores eg . question 1 correct anser is A score is 10
-            $table->json('correct_answers')->nullable();
+            $table->json('questions')->nullable();
             $table->timestamps();
         });
     }

@@ -19,14 +19,20 @@ class ResultFactory extends Factory
     {
         return [
             'exam_id' => \App\Models\Exam::all()->random()->id,
-            'student_code' => Student::all()->random()->code,
-            'score' => $this->faker->numberBetween(0, 100),
+            'student_id' => Student::all()->random()->id,
             'status' => $this->faker->randomElement(['passed', 'failed']),
             'submitted_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
             'answers' => [
-                'question_1' => $this->faker->randomLetter(),
-                'question_2' => $this->faker->randomLetter(),
-                'question_3' => $this->faker->randomLetter(),
+                ['id' => 1, 'answer' => $this->faker->randomElement(['A', 'B', 'C', 'D', 'E',])],
+                ['id' => 2, 'answer' => $this->faker->randomElement(['A', 'B', 'C', 'D', 'E',])],
+                ['id' => 3, 'answer' => $this->faker->randomElement(['A', 'B', 'C', 'D', 'E',])],
+                ['id' => 4, 'answer' => $this->faker->randomElement(['A', 'B', 'C', 'D', 'E',])],
+                ['id' => 5, 'answer' => $this->faker->randomElement(['A', 'B', 'C', 'D', 'E',])],
+                ['id' => 6, 'answer' => $this->faker->randomElement(['A', 'B', 'C', 'D', 'E',])],
+                ['id' => 7, 'answer' => $this->faker->randomElement(['A', 'B', 'C', 'D', 'E',])],
+                ['id' => 8, 'answer' => $this->faker->randomElement(['A', 'B', 'C', 'D', 'E',])],
+                ['id' => 9, 'answer' => $this->faker->randomElement(['A', 'B', 'C', 'D', 'E',])],
+                ['id' => 10, 'answer' => $this->faker->randomElement(['A', 'B', 'C', 'D', 'E',])],
             ],
         ];
     }
