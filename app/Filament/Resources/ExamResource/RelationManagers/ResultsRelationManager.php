@@ -142,7 +142,7 @@ class ResultsRelationManager extends RelationManager
 
             ])
             ->actions([
-                Tables\Actions\Action::make('preview_answers')
+                Tables\Actions\ViewAction::make()
                     ->modalHeading(fn($record) => 'Preview ' . $record->student->name . ' Answers')
                     ->infolist([
                         TableRepeatableEntry::make('preview_answers')
