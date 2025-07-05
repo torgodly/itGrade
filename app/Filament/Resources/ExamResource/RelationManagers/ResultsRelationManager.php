@@ -167,7 +167,6 @@ class ResultsRelationManager extends RelationManager
                             }
 
                             $result = $this->getOwnerRecord()->results()->create([
-                                'student_id' => auth()->user()->id,
                                 'status' => 'pending',
                                 'submitted_at' => now(),
                             ]);
