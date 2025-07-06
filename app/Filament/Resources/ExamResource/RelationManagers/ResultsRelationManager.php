@@ -2,9 +2,13 @@
 
 namespace App\Filament\Resources\ExamResource\RelationManagers;
 
+use App\Actions\AnalyzePaperAction;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\IconEntry;
+use Filament\Infolists\Components\SpatieMediaLibraryImageEntry;
+use Filament\Infolists\Components\Tabs;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -63,7 +67,9 @@ class ResultsRelationManager extends RelationManager
                     ->searchable(),
 
                 SpatieMediaLibraryImageColumn::make('exam_paper')
-                    ->collection('exam_paper')
+                    ->collection('exam_paper'),
+                SpatieMediaLibraryImageColumn::make('exam_answers')
+                    ->collection('exam_answers')
 
             ])
             ->filters([
@@ -179,19 +185,39 @@ class ResultsRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
-                    ->modalHeading(fn($record) => 'Preview ' . $record->student->name . ' Answers')
+                    ->modalHeading(fn($record) => 'Preview ' . $record->student?->name . ' Answers')
                     ->infolist([
-                        TableRepeatableEntry::make('preview_answers')
-                            ->hiddenLabel()
-                            ->schema([
-                                TextEntry::make('question_text'),
-                                TextEntry::make('correct_answer')
-                                    ->badge(),
-                                TextEntry::make('student_answer')
-                                    ->badge(),
-                                IconEntry::make('is_correct')
-                                    ->boolean()
-                            ]),
+                        Tabs::make('Tabs')
+                            ->contained(false)
+                            ->tabs([
+                                Tabs\Tab::make('answers')
+                                    ->schema([
+                                        TableRepeatableEntry::make('preview_answers')
+                                            ->hiddenLabel()
+                                            ->schema([
+                                                TextEntry::make('question_text'),
+                                                TextEntry::make('correct_answer')
+                                                    ->badge(),
+                                                TextEntry::make('student_answer')
+                                                    ->badge(),
+                                                IconEntry::make('is_correct')
+                                                    ->boolean()
+                                            ]),
+                                    ]),
+                                Tabs\Tab::make('exam_papers')
+                                    ->schema([
+                                        Grid::make()->schema([
+                                            SpatieMediaLibraryImageEntry::make('exam_paper')
+                                                ->height(600)
+                                                ->extraImgAttributes(['class'=> 'bg-gray-100'])
+                                                ->collection('exam_paper'),
+                                            SpatieMediaLibraryImageEntry::make('exam_answers')
+                                                ->height(600)
+//                                                ->extraImgAttributes(['class'=> 'object-fit'])
+                                                ->collection('exam_answers')
+                                        ])
+                                    ]),
+                            ])
 
 
                     ]),
@@ -261,6 +287,9 @@ class ResultsRelationManager extends RelationManager
 
                     ]),
                 Tables\Actions\DeleteAction::make(),
+
+                Tables\Actions\Action::make('process_exam_paper')
+                    ->action(fn($record) => (new AnalyzePaperAction($record))->handle())
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
