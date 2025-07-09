@@ -179,9 +179,34 @@ class ResultsRelationManager extends RelationManager
 
                             $result->addMedia($filePath)->toMediaCollection('exam_paper');
                         }
+                    }),
+
+
+                //Process Exam Papers
+                Tables\Actions\Action::make('process_all_exam_papers')
+                    ->label('Process All Exam Papers')
+                    ->slideOver()
+                    ->action(function () {
+                        $results = $this->ownerRecord->results->whereNull('student_id')
+                        ->each(function ($result) {
+                            (new AnalyzePaperAction($result))->handle();
+                        });
+
+                        $this->resetTable();
+
+                        Notification::make()
+                            ->title('Processing Started')
+                            ->body('The exam papers are being processed. Please check back later for results.')
+                            ->success()
+                            ->send();
+
+                        //success notification
+                        Notification::make()
+                            ->title('Processing Done')
+                            ->body('The exam papers are being processed.')
+                            ->success()
+                            ->send();
                     })
-
-
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
@@ -209,7 +234,7 @@ class ResultsRelationManager extends RelationManager
                                         Grid::make()->schema([
                                             SpatieMediaLibraryImageEntry::make('exam_paper')
                                                 ->height(600)
-                                                ->extraImgAttributes(['class'=> 'bg-gray-100'])
+                                                ->extraImgAttributes(['class' => 'bg-gray-100'])
                                                 ->collection('exam_paper'),
                                             SpatieMediaLibraryImageEntry::make('exam_answers')
                                                 ->height(600)
