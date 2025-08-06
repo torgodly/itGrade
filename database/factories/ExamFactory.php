@@ -28,7 +28,7 @@ class ExamFactory extends Factory
                 'Biology Exam',
             ]),
             'description' => $this->faker->paragraph(),
-            'data' => $this->faker->dateTimeBetween('-1 year', '+1 year'),
+            'date' => $this->faker->dateTimeBetween('-1 year', '+1 year'),
             'course_id' => \App\Models\Course::all()->random()->id,
             //correct answers and scores eg . question 1 correct anser is A score is 10
             'questions' => [

@@ -138,9 +138,14 @@ if circles is not None:
     circles = np.uint16(np.around(circles[0]))
 
     # Draw rectangles for visualization (optional)
-    cv2.rectangle(img, (300, 300), (830, 3200), (255, 0, 0), 3)      # Region 1
-    cv2.rectangle(img, (830, 300), (1400, 3200), (255, 0, 0), 3)     # Region 2
-    cv2.rectangle(img, (1450, 1650), (2250, 2500), (0, 255, 255), 3) # ID region
+    cv2.rectangle(img, (300, 300), (830, 3200), (255, 0, 0), 5)      # Region 1
+    cv2.rectangle(img, (830, 300), (1400, 3200), (255, 0, 0), 5)     # Region 2
+    cv2.rectangle(img, (1450, 1650), (2250, 2500), (255, 0, 0), 5) # ID region
+
+    # write above each rectangle
+    cv2.putText(img, 'Region 1', (300, 280), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 0, 0), 3)
+    cv2.putText(img, 'Region 2', (830, 280), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 0, 0), 3)
+    cv2.putText(img, 'ID Region', (1450, 1500), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 0, 0), 3)
 
     results["answers"].extend(process_region(circles, 300, 830, 300, 3200, 1))
     results["answers"].extend(process_region(circles, 830, 1400, 300, 3200, 36))

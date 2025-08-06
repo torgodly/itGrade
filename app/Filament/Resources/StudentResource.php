@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\StudentResource\Pages;
 use App\Models\Student;
+use App\Trait\ResourceTranslatedLabels;
 use EightyNine\ExcelImport\ExcelImportAction;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -13,6 +14,7 @@ use Filament\Tables\Table;
 
 class StudentResource extends Resource
 {
+    use ResourceTranslatedLabels;
     protected static ?string $model = Student::class;
 
     protected static ?string $navigationIcon = 'tabler-school';

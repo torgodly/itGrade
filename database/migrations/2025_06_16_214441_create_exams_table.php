@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->dateTime('data');
+            $table->dateTime('date');
             $table->foreignId('course_id')->constrained();
             $table->json('questions')->nullable();
             $table->timestamps();

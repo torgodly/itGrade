@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ResultResource\Pages;
 use App\Filament\Resources\ResultResource\RelationManagers;
 use App\Models\Result;
+use App\Trait\ResourceTranslatedLabels;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\IconEntry;
@@ -16,6 +17,7 @@ use Icetalker\FilamentTableRepeatableEntry\Infolists\Components\TableRepeatableE
 
 class ResultResource extends Resource
 {
+    use ResourceTranslatedLabels;
     protected static ?string $model = Result::class;
 
     protected static ?string $navigationIcon = 'tabler-report';
@@ -70,7 +72,7 @@ class ResultResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
-                    ->modalHeading(fn($record) => 'Preview ' . $record->student->name . ' Answers')
+                    ->modalHeading(fn($record) => __('Preview Answers for :student', ['student' => $record->student->name]))
                     ->infolist([
                         TableRepeatableEntry::make('preview_answers')
                             ->hiddenLabel()

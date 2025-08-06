@@ -210,7 +210,7 @@ class ResultsRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
-                    ->modalHeading(fn($record) => 'Preview ' . $record->student?->name . ' Answers')
+                    ->modalHeading(fn($record) => __('Preview Answers for :student', ['student' => $record->student->name]))
                     ->infolist([
                         Tabs::make('Tabs')
                             ->contained(false)
