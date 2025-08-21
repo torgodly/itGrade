@@ -38,4 +38,6 @@ class Exam extends Model implements HasMedia
             'questions' => 'array',
         ];
     }
+
+
 }

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ExamResource\RelationManagers;
 
 use App\Actions\AnalyzePaperAction;
+use App\Filament\Exports\ResultExporter;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\Grid;
@@ -13,6 +14,7 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Table;
 use Icetalker\FilamentTableRepeatableEntry\Infolists\Components\TableRepeatableEntry;
@@ -76,8 +78,12 @@ class ResultsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
+                ExportAction::make()
+                    ->label('Export Results')
+                    ->exporter(ResultExporter::class),
                 Tables\Actions\CreateAction::make()
                     ->label('Add Exam Result')
+                    ->translateLabel()
                     ->slideOver()
                     ->form([
                         Forms\Components\Select::make('student_id')
@@ -153,6 +159,7 @@ class ResultsRelationManager extends RelationManager
 
                 Tables\Actions\Action::make('upload_exam_papers')
                     ->label('Upload Exam Papers')
+                    ->translateLabel()
                     ->slideOver()
                     ->form([
                         Forms\Components\FileUpload::make('exam_papers')
@@ -185,12 +192,13 @@ class ResultsRelationManager extends RelationManager
                 //Process Exam Papers
                 Tables\Actions\Action::make('process_all_exam_papers')
                     ->label('Process All Exam Papers')
+                    ->translateLabel()
                     ->slideOver()
                     ->action(function () {
                         $results = $this->ownerRecord->results->whereNull('student_id')
-                        ->each(function ($result) {
-                            (new AnalyzePaperAction($result))->handle();
-                        });
+                            ->each(function ($result) {
+                                (new AnalyzePaperAction($result))->handle();
+                            });
 
                         $this->resetTable();
 
@@ -314,6 +322,8 @@ class ResultsRelationManager extends RelationManager
                 Tables\Actions\DeleteAction::make(),
 
                 Tables\Actions\Action::make('process_exam_paper')
+                    ->label('Process Exam Paper')
+                    ->translateLabel()
                     ->action(fn($record) => (new AnalyzePaperAction($record))->handle())
             ])
             ->bulkActions([

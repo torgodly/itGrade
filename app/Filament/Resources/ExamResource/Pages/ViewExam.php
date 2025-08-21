@@ -39,7 +39,7 @@ class ViewExam extends ViewRecord
                         TextEntry::make('description')
                             ->label('Description'),
                     ]),
-                Section::make(fn($record) => 'Correct Answers (' . count($record->questions) . ' questions)')
+                Section::make(fn($record) => __('Questions for :exam', ['exam' => $record->name]))
                     ->collapsed()
                     ->schema([
                         TableRepeatableEntry::make('questions')

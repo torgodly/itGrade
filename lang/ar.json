@@ -26,7 +26,7 @@
     "Status": "الحالة",
     "Submitted at": "تم التقديم في",
     "Preview Answers for :student": "معاينة الإجابات لـ :student",
-    "Question text":" نص السؤال",
+    "Question text": " نص السؤال",
     "Correct answer": "الإجابة الصحيحة",
     "Student answer": "إجابة الطالب",
     "Is correct": "هل هي صحيحة",
@@ -35,5 +35,17 @@
     "Code": "رقم القيد",
     "Email": "البريد الإلكتروني",
     "Exams count": "عدد الامتحانات",
-    "Import": "استيراد"
+    "Import": "استيراد",
+    "Questions for :exam": "الأسئلة لـ :exam",
+    "Add Exam Result": "إضافة نتيجة امتحان",
+    "Upload Exam Papers": "تحميل أوراق الامتحان",
+    "Process All Exam Papers": "معالجة جميع أوراق الامتحان",
+    "Process Exam Paper": "معالجة ورقة الامتحان",
+    "Student Code": "رقم القيد",
+    "Student Name": "اسم الطالب",
+    "Correct Answers": "الإجابات الصحيحة",
+    "Your results export has completed and :successfulRows exported.": "اكتملت عملية تصدير النتائج الخاصة بك وتم تصدير :successfulRows صفوف بنجاح.",
+    "Export Results": "تصدير النتائج",
+    "Default Score": "النتيجة الافتراضية",
+    "Exam Paper": "ورقة الامتحان"
 }

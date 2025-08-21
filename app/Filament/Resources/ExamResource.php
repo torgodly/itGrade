@@ -86,6 +86,13 @@ class ExamResource extends Resource
                                             ])
 
                                     ]),
+                                    //default score
+                                    Forms\Components\TextInput::make('default_score')
+                                        ->label('Default Score')
+                                        ->numeric()
+                                        ->default(0)
+                                        ->required()
+                                        ->columnSpanFull(),
                                     Forms\Components\FileUpload::make('exam_paper')
                                         ->label('Exam Paper')
                                         ->required()
@@ -111,12 +118,12 @@ class ExamResource extends Resource
 
                                     $paperJson = collect($paperJson['answers']);
                                     $paperJson = $paperJson->take($data['to']);
-                                    $paperJson = $paperJson->map(function ($answer) {
+                                    $paperJson = $paperJson->map(function ($answer) use ($data) {
                                         return [
                                             'id' => $answer['id'],
                                             'question' => __('Question Number :number', ['number' => $answer['id']]),
                                             'answer' => $answer['answer'],
-                                            'score' => null
+                                            'score' => $data['default_score'] ?: 0,
                                         ];
                                     });
                                     $set('questions', $paperJson->toArray());
@@ -137,7 +144,7 @@ class ExamResource extends Resource
                                 Forms\Components\TextInput::make('question')
                                     ->label('Question')
                                     ->live()
-                                    ->default(fn(Forms\Get $get) =>  __('Question Number :number', ['number' => count($get('../../questions'))]))
+                                    ->default(fn(Forms\Get $get) => __('Question Number :number', ['number' => count($get('../../questions'))]))
                                     ->required()
                                     ->maxLength(255)
                                     ->columnSpan(5),
