@@ -26,6 +26,10 @@ class ExamResource extends Resource
     protected static ?string $navigationIcon = 'tabler-writing';
 
     protected static ?string $navigationGroup = 'Academics';
+    public static function canAccess(): bool
+    {
+        return auth()->user()->type === 'teacher';
+    }
 
     public static function form(Form $form): Form
     {

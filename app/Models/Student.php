@@ -24,4 +24,6 @@ class Student extends Model
     {
         return $this->hasManyThrough(Exam::class, Result::class, 'student_id', 'id', 'id', 'exam_id');
     }
+
+
 }

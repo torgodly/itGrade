@@ -11,15 +11,24 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Auth\Access\Response;
+use Illuminate\Database\Eloquent\Model;
 
 class CourseResource extends Resource
 {
     use ResourceTranslatedLabels;
+
     protected static ?string $model = Course::class;
 
     protected static ?string $navigationIcon = 'tabler-books';
 
     protected static ?string $navigationGroup = 'Academics';
+
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()->type === 'teacher';
+    }
 
     public static function form(Form $form): Form
     {

@@ -23,6 +23,10 @@ class ResultResource extends Resource
     protected static ?string $navigationIcon = 'tabler-report';
 
     protected static ?string $navigationGroup = 'Reports';
+    public static function canAccess(): bool
+    {
+        return auth()->user()->type === 'teacher';
+    }
 
     public static function form(Form $form): Form
     {

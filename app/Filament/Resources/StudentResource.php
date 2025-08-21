@@ -20,6 +20,10 @@ class StudentResource extends Resource
     protected static ?string $navigationIcon = 'tabler-school';
 
     protected static ?string $navigationGroup = 'Users';
+    public static function canAccess(): bool
+    {
+        return auth()->user()->type === 'teacher';
+    }
 
     public static function form(Form $form): Form
     {
