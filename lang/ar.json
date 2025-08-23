@@ -47,5 +47,9 @@
     "Your results export has completed and :successfulRows exported.": "اكتملت عملية تصدير النتائج الخاصة بك وتم تصدير :successfulRows صفوف بنجاح.",
     "Export Results": "تصدير النتائج",
     "Default Score": "النتيجة الافتراضية",
-    "Exam Paper": "ورقة الامتحان"
+    "Exam Paper":   "ورقة الامتحان",
+    "Type": "النوع",
+    "Is approved": "هل تمت الموافقة",
+    "Access Denied": "تم رفض الوصول",
+    "You cannot access the admin panel until your account is approved by an administrator.": "لا يمكنك الوصول إلى لوحة الإدارة حتى تتم الموافقة على حسابك من قبل مسؤول."
 }

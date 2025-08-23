@@ -9,6 +9,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\Entry;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\Column;
 use Filament\Tables\Columns\TextColumn;
@@ -61,6 +62,9 @@ class AppServiceProvider extends ServiceProvider
         Entry::configureUsing(function (Entry $entry) {
             $entry->translateLabel();
         });
+
+        //if user is teacher and not approved log out wiht notification
+
 
     }
 }

@@ -33,6 +33,7 @@ class AnalyzePaperAction
             $outputPathLocal
         ]);
         //dump the command for debugging
+//        dd($process->getCommandLine());
         $process->run();
 
         if (! $process->isSuccessful()) {
@@ -40,6 +41,7 @@ class AnalyzePaperAction
         }
 
         $jsonOutput = $process->getOutput();
+
         $data = json_decode($jsonOutput, true);
         // Save JSON data to the result record
         $this->result->student_id =  Student::where('code', $data['student_id'])->first()->id ?? null;

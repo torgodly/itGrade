@@ -76,7 +76,7 @@ class ResultResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
-                    ->modalHeading(fn($record) => __('Preview Answers for :student', ['student' => $record->student->name]))
+                    ->modalHeading(fn($record) => __('Preview Answers for :student', ['student' => $record->student?->name]))
                     ->infolist([
                         TableRepeatableEntry::make('preview_answers')
                             ->hiddenLabel()

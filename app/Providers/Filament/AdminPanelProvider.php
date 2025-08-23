@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use App\Http\Middleware\EnsureTeacherIsApproved;
+use App\Models\User;
 use DutchCodingCompany\FilamentDeveloperLogins\FilamentDeveloperLoginsPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -29,6 +31,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->registration()
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -36,9 +39,7 @@ class AdminPanelProvider extends PanelProvider
             ->plugin(
                 FilamentDeveloperLoginsPlugin::make()
                     ->enabled()
-                    ->users([
-                        'Admin' => 'admin@admin.com',
-                    ])
+                    ->users(User::get()->pluck('email','name')->toArray())
             )
             ->plugin(
                 BreezyCore::make()
@@ -70,6 +71,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                EnsureTeacherIsApproved::class
             ]);
     }
 }

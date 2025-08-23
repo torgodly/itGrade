@@ -22,8 +22,8 @@ blur = cv2.GaussianBlur(gray, (5, 5), 0)
 
 # Detect circles
 circles = cv2.HoughCircles(
-    blur, cv2.HOUGH_GRADIENT, 1, 20,
-    param1=50, param2=30, minRadius=10, maxRadius=30
+    blur, cv2.HOUGH_GRADIENT, dp=1, minDist=20,
+    param1=50, param2=20, minRadius=12, maxRadius=35
 )
 
 def cluster_positions(positions, threshold=15):
@@ -139,17 +139,17 @@ if circles is not None:
 
     # Draw rectangles for visualization (optional)
     cv2.rectangle(img, (300, 300), (830, 3200), (255, 0, 0), 5)      # Region 1
-    cv2.rectangle(img, (830, 300), (1400, 3200), (255, 0, 0), 5)     # Region 2
-    cv2.rectangle(img, (1450, 1650), (2250, 2500), (255, 0, 0), 5) # ID region
+    cv2.rectangle(img, (850, 300), (1420, 3200), (255, 0, 0), 5)     # Region 2
+    cv2.rectangle(img, (1480, 1700), (2300, 2550), (255, 0, 0), 5) # ID region
 
     # write above each rectangle
     cv2.putText(img, 'Region 1', (300, 280), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 0, 0), 3)
     cv2.putText(img, 'Region 2', (830, 280), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 0, 0), 3)
     cv2.putText(img, 'ID Region', (1450, 1500), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 0, 0), 3)
 
-    results["answers"].extend(process_region(circles, 300, 830, 300, 3200, 1))
-    results["answers"].extend(process_region(circles, 830, 1400, 300, 3200, 36))
-    results["student_id"] = process_id_region(circles, 1450, 2250, 1650, 2500)
+    results["answers"].extend(process_region(circles, 300, 850, 300, 3200, 1))
+    results["answers"].extend(process_region(circles, 850, 1420, 300, 3200, 36))
+    results["student_id"] = process_id_region(circles, 1480, 2300, 1700, 2550)
 
 # Save annotated image
 cv2.imwrite(output_path, img)

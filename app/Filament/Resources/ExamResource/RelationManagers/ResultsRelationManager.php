@@ -80,6 +80,7 @@ class ResultsRelationManager extends RelationManager
             ->headerActions([
                 ExportAction::make()
                     ->label('Export Results')
+                    ->translateLabel()
                     ->exporter(ResultExporter::class),
                 Tables\Actions\CreateAction::make()
                     ->label('Add Exam Result')
@@ -218,7 +219,7 @@ class ResultsRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
-                    ->modalHeading(fn($record) => __('Preview Answers for :student', ['student' => $record->student->name]))
+                    ->modalHeading(fn($record) => __('Preview Answers for :student', ['student' => $record->student?->name]))
                     ->infolist([
                         Tabs::make('Tabs')
                             ->contained(false)
