@@ -4,6 +4,7 @@ namespace App\Filament\Resources\ExamResource\RelationManagers;
 
 use App\Actions\AnalyzePaperAction;
 use App\Filament\Exports\ResultExporter;
+use App\Jobs\ProcessExamPapersJob;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\Grid;
@@ -20,6 +21,7 @@ use Filament\Tables\Table;
 use Icetalker\FilamentTableRepeatableEntry\Infolists\Components\TableRepeatableEntry;
 use Illuminate\Support\HtmlString;
 use Illuminate\Validation\Rules\Unique;
+use ZipArchive;
 
 class ResultsRelationManager extends RelationManager
 {
@@ -165,13 +167,15 @@ class ResultsRelationManager extends RelationManager
                     ->form([
                         Forms\Components\FileUpload::make('exam_papers')
                             ->label('Upload Exam Papers')
-                            ->image()
                             ->multiple()
                             ->required()
-                            ->helperText('Upload the exam papers')
+                            ->helperText('Upload images or a ZIP file containing exam papers')
+                            ->disk('public')
+                            ->rules(['mimes:jpg,jpeg,png,zip'])
+
                     ])
                     ->action(function ($data) {
-                        $examPapers = $data['exam_papers']; // array of filenames, e.g. ['01JZBP3MKP6QJ4H55FCRV5Z511.png', ...]
+                        $examPapers = $data['exam_papers'];
 
                         foreach ($examPapers as $examPaper) {
                             $filePath = storage_path('app/public/' . $examPaper);
@@ -180,12 +184,45 @@ class ResultsRelationManager extends RelationManager
                                 throw new \Exception("File does not exist: " . $filePath);
                             }
 
-                            $result = $this->getOwnerRecord()->results()->create([
-                                'status' => 'pending',
-                                'submitted_at' => now(),
-                            ]);
+                            // If it's a zip, extract and loop through files
+                            if (strtolower(pathinfo($filePath, PATHINFO_EXTENSION)) === 'zip') {
+                                $extractPath = storage_path('app/tmp/exams/' . uniqid('', true));
 
-                            $result->addMedia($filePath)->toMediaCollection('exam_paper');
+                                if (!mkdir($extractPath, 0777, true) && !is_dir($extractPath)) {
+                                    throw new \RuntimeException(sprintf('Directory "%s" was not created', $extractPath));
+                                }
+
+                                $zip = new ZipArchive();
+                                if ($zip->open($filePath) === true) {
+                                    $zip->extractTo($extractPath);
+                                    $zip->close();
+
+                                    $files = new \RecursiveIteratorIterator(
+                                        new \RecursiveDirectoryIterator($extractPath, \FilesystemIterator::SKIP_DOTS)
+                                    );
+
+                                    foreach ($files as $file) {
+                                        if ($file->isFile() && in_array(strtolower($file->getExtension()), ['jpg', 'jpeg', 'png'])) {
+                                            $result = $this->getOwnerRecord()->results()->create([
+                                                'status' => 'pending',
+                                                'submitted_at' => now(),
+                                            ]);
+
+                                            $result->addMedia($file->getPathname())->toMediaCollection('exam_paper');
+                                        }
+                                    }
+                                } else {
+                                    throw new \Exception("Failed to open zip file: " . $filePath);
+                                }
+                            } else {
+                                // Normal image
+                                $result = $this->getOwnerRecord()->results()->create([
+                                    'status' => 'pending',
+                                    'submitted_at' => now(),
+                                ]);
+
+                                $result->addMedia($filePath)->toMediaCollection('exam_paper');
+                            }
                         }
                     }),
 
@@ -196,23 +233,10 @@ class ResultsRelationManager extends RelationManager
                     ->translateLabel()
                     ->slideOver()
                     ->action(function () {
-                        $results = $this->ownerRecord->results->whereNull('student_id')
-                            ->each(function ($result) {
-                                (new AnalyzePaperAction($result))->handle();
-                            });
-
-                        $this->resetTable();
-
+                        ProcessExamPapersJob::dispatch($this->ownerRecord->id);
                         Notification::make()
                             ->title('Processing Started')
-                            ->body('The exam papers are being processed. Please check back later for results.')
-                            ->success()
-                            ->send();
-
-                        //success notification
-                        Notification::make()
-                            ->title('Processing Done')
-                            ->body('The exam papers are being processed.')
+                            ->body('The exam papers are being processed in the background. Check back later for results.')
                             ->success()
                             ->send();
                     })
@@ -278,8 +302,6 @@ class ResultsRelationManager extends RelationManager
                     })
                     ->form([
                         Forms\Components\Select::make('student_id')
-                            ->disabled()
-                            ->dehydrated(true)
                             ->relationship('student', 'name')
                             ->searchable(['name', 'code'])
                             ->preload()
