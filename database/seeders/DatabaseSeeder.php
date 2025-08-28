@@ -25,10 +25,10 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@admin.com',
             'type' => 'admin',
         ]);
-        Course::factory(30)->create();
-        Exam::factory(30)->create();
-        Student::factory(10)->create();
-        Result::factory(300)->create();
+//        Course::factory(30)->create();
+//        Exam::factory(30)->create();
+//        Student::factory(10)->create();
+//        Result::factory(300)->create();
 
 
 

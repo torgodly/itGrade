@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -83,5 +84,11 @@ class Result extends Model implements HasMedia
         return [
             'answers' => 'array',
         ];
+    }
+
+    //has one through to course via exam
+    public function course(): HasOneThrough
+    {
+        return $this->hasOneThrough(Course::class, Exam::class, 'id', 'id', 'exam_id', 'course_id');
     }
 }

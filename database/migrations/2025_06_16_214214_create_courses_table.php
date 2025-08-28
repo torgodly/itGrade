@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->string('name')->comment('Course name');
             $table->text('description')->nullable()->comment('Course description');
             $table->string('term')->comment('Course term');
+            $table->string('academic_year')->comment('Academic year');
             $table->timestamps();
         });
     }

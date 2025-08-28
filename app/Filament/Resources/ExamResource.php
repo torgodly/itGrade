@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Actions\AnalyzePaperAction;
 use App\Filament\Resources\ExamResource\Pages;
 use App\Filament\Resources\ExamResource\RelationManagers;
+use App\Models\Course;
 use App\Models\Exam;
 use App\Trait\ResourceTranslatedLabels;
 use Filament\Forms;
@@ -46,7 +47,9 @@ class ExamResource extends Resource
                                 ->translateLabel()
                                 ->required(),
                             Forms\Components\Select::make('course_id')
-                                ->relationship('course', 'name')
+                                ->label('Course')
+                                ->translateLabel()
+                                ->options(Course::all()->pluck('name_with_year_term', 'id'))
                                 ->preload()
                                 ->searchable()
                                 ->required(),

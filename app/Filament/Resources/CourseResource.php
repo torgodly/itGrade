@@ -34,16 +34,30 @@ class CourseResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Grid::make()->schema([
+                Forms\Components\Grid::make(3)->schema([
                     Forms\Components\TextInput::make('name')
                         ->required()
                         ->maxLength(255),
                     Forms\Components\Select::make('term')
                         ->options([
-                            'Fall' => 'Fall',
-                            'Spring' => 'Spring',
-                            'Summer' => 'Summer',
+                            'Fall' => __('Fall'),
+                            'Spring' => __('Spring'),
+                            'Summer' => __('Summer'),
                         ])
+                        ->required(),
+                    //academic year select current year and next year to year 2100 option shoud look like 2023-2024
+                    Forms\Components\Select::make('academic_year')
+                        ->label('Academic Year')
+                        ->translateLabel()
+                        ->options(function () {
+                            $years = [];
+                            $currentYear = date('Y');
+                            for ($year = $currentYear; $year <= 2100; $year++) {
+                                $years["$year-" . ($year + 1)] = "$year-" . ($year + 1);
+                            }
+                            return $years;
+                        })
+                        ->default(date('Y') . '-' . (date('Y') + 1))
                         ->required(),
                 ]),
                 Forms\Components\Textarea::make('description')

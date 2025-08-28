@@ -17,4 +17,10 @@ class Course extends Model
     {
         return $this->hasMany(Exam::class, 'course_id');
     }
+
+    //get attbute name with academic year and term like "Course Name (2023-2024 - Fall)"
+    public function getNameWithYearTermAttribute(): string
+    {
+        return $this->name . ' (' . $this->academic_year . ' - ' . __($this->term) . ')';
+    }
 }

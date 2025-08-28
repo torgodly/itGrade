@@ -51,5 +51,13 @@
     "Type": "النوع",
     "Is approved": "هل تمت الموافقة",
     "Access Denied": "تم رفض الوصول",
-    "You cannot access the admin panel until your account is approved by an administrator.": "لا يمكنك الوصول إلى لوحة الإدارة حتى تتم الموافقة على حسابك من قبل مسؤول."
+    "You cannot access the admin panel until your account is approved by an administrator.": "لا يمكنك الوصول إلى لوحة الإدارة حتى تتم الموافقة على حسابك من قبل مسؤول.",
+    "Academic Year": "السنة الدراسية",
+    "Fall": "الخريف",
+    "Spring": "الربيع",
+    "Summer": "الصيف",
+    "Import Students": "استيراد الطلاب",
+    "Course Name": "اسم المادة",
+    "Course Term": "الفصل الدراسي للمادة",
+    "Course Academic Year": "السنة الدراسية للمادة"
 }
