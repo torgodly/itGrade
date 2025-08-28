@@ -31,6 +31,7 @@ class StudentPanelProvider extends PanelProvider
             ->path('student')
             ->authGuard('student')
             ->login()
+            ->brandName('ITGrade')
             ->colors([
                 'primary' => Color::Amber,
             ])

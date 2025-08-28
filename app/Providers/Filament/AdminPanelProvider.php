@@ -33,6 +33,7 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->registration()
             ->databaseNotifications()
+            ->brandName('ITGrade')
             ->colors([
                 'primary' => Color::Amber,
             ])
