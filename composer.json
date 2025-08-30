@@ -7,6 +7,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "ext-zip": "*",
         "dutchcodingcompany/filament-developer-logins": "^1.9",
         "eightynine/filament-excel-import": "^3.1",
         "filament/filament": "^3.3",
@@ -16,7 +17,7 @@
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
         "secondnetwork/blade-tabler-icons": "^3.34",
-        "ext-zip": "*"
+        "yebor974/filament-renew-password": "^2.1"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

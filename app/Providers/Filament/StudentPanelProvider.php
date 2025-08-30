@@ -21,6 +21,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
+use Yebor974\Filament\RenewPassword\RenewPasswordPlugin;
 
 class StudentPanelProvider extends PanelProvider
 {
@@ -41,6 +42,9 @@ class StudentPanelProvider extends PanelProvider
                     ->modelClass(Student::class)
                     ->users(Student::get()->pluck('email','name')->toArray())
             )
+            ->plugin(RenewPasswordPlugin::make()
+                ->passwordExpiresIn(days: 300   )
+                ->forceRenewPassword())
             ->plugin(
                 BreezyCore::make()
                     ->myProfile(

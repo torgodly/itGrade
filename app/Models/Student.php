@@ -9,9 +9,13 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Jeffgreco13\FilamentBreezy\Traits\TwoFactorAuthenticatable;
+use Yebor974\Filament\RenewPassword\Contracts\RenewPasswordContract;
+use Yebor974\Filament\RenewPassword\Traits\RenewPassword;
 
-class Student extends Authenticatable
+class Student extends Authenticatable implements RenewPasswordContract
 {
+    use RenewPassword;
+
     /** @use HasFactory<\Database\Factories\StudentFactory> */
     use HasFactory, Notifiable;
     use TwoFactorAuthenticatable;
