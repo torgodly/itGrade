@@ -28,7 +28,7 @@ class Course extends Model
     protected static function booted(): void
     {
         static::addGlobalScope('teacher', function (Builder $query) {
-            if (auth()->hasUser()) {
+            if (auth()->hasUser() && auth()->user()->type === 'teacher') {
                 $query->where('teacher_id', auth()->user()->id);
                 // or with a `team` relationship defined:
 //                $query->whereBelongsTo(auth()->user ()->team);

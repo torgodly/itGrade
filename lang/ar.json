@@ -64,5 +64,16 @@
     "Some questions could not be loaded": "بعض الأسئلة لم يتم تحميلها",
     "Questions Loaded Successfully": "تم تحميل الأسئلة بنجاح",
     "Questions with no answers: :questions": "أسئلة بدون إجابات: :questions",
-    "Unknown , Check Visually": "غير معروف، تحقق بصريًا"
+    "Unknown , Check Visually": "غير معروف، تحقق بصريًا",
+    "Appeal": "تقديم طلب مراجعة",
+    "Processing Started": "تم بدء المعالجة",
+    "The exam papers are being processed in the background. Check back later for results.": "يتم معالجة أوراق الامتحان في الخلفية. تحقق لاحقًا للحصول على النتائج.",
+    "Reason for Appeal": "سبب المراجعة",
+    "Appeal submitted": "تم تقديم المراجعة",
+    "Your appeal has been submitted and is under review.": "تم تقديم طلب المراجعة الخاص بك وهو قيد المراجعة.",
+    "Reason": "السبب",
+    "Appeals": "طلبات المراجعة",
+    "Submitted At": "تم التقديم في",
+    "Exam answers": "إجابات الامتحان",
+    "Exam paper": "ورقة الامتحان"
 }

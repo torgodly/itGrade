@@ -15,13 +15,17 @@ use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Table;
 use Icetalker\FilamentTableRepeatableEntry\Infolists\Components\TableRepeatableEntry;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\HtmlString;
 
 class ResultsRelationManager extends RelationManager
 {
     protected static string $relationship = 'results';
-
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __(parent::getTitle($ownerRecord, $pageClass));
+    } // Declare $isEditable with #[State]
     public function form(Form $form): Form
     {
         return $form

@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class ExamResource extends Resource
 {
     use ResourceTranslatedLabels;
+
     protected static ?string $model = Exam::class;
 
     protected static ?string $navigationIcon = 'tabler-writing';
@@ -51,7 +52,7 @@ class ExamResource extends Resource
                 //attendance count from results
                 Tables\Columns\TextColumn::make('results_count')
                     ->label('Results Count')
-                    ->state(fn (Exam $record): int => $record->results()->where('student_id', auth()->id())->count())
+                    ->state(fn(Exam $record): int => $record->results()->where('student_id', auth()->id())->count())
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -79,7 +80,8 @@ class ExamResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\ResultsRelationManager::class
+            RelationManagers\ResultsRelationManager::class,
+            RelationManagers\AppealsRelationManager::class
         ];
     }
 

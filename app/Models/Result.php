@@ -98,13 +98,12 @@ class Result extends Model implements HasMedia
     protected static function booted(): void
     {
         static::addGlobalScope('teacher', function (Builder $query) {
-            if (auth()->hasUser()) {
+            if (auth()->hasUser() && auth()->user()->type === 'teacher') {
                 $query->whereHas('exam', function (Builder $query) {
                     $query->whereHas('course', function (Builder $query) {
                         $query->where('teacher_id', auth()->user()->id);
                     });
                 });
-
             }
         });
     }

@@ -235,8 +235,8 @@ class ResultsRelationManager extends RelationManager
                     ->action(function () {
                         ProcessExamPapersJob::dispatch($this->ownerRecord->id);
                         Notification::make()
-                            ->title('Processing Started')
-                            ->body('The exam papers are being processed in the background. Check back later for results.')
+                            ->title(__("Processing Started"))
+                            ->body(__("The exam papers are being processed in the background. Check back later for results."))
                             ->success()
                             ->send();
                     })

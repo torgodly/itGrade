@@ -39,10 +39,15 @@ class Exam extends Model implements HasMedia
             'questions' => 'array',
         ];
     }
+
+    public function appeals(): HasMany
+    {
+        return $this->hasMany(Appeal::class, 'exam_id');
+    }
     protected static function booted(): void
     {
         static::addGlobalScope('teacher', function (Builder $query) {
-            if (auth()->hasUser()) {
+            if (auth()->hasUser() && auth()->user()->type === 'teacher') {
                 $query->whereHas('course', function (Builder $query) {
                     $query->where('teacher_id', auth()->user()->id);
                 });
@@ -51,5 +56,6 @@ class Exam extends Model implements HasMedia
             }
         });
     }
+
 
 }
