@@ -12,6 +12,8 @@ use Filament\Forms;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Livewire\Notifications;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Tables;
@@ -27,6 +29,7 @@ class ExamResource extends Resource
     protected static ?string $navigationIcon = 'tabler-writing';
 
     protected static ?string $navigationGroup = 'Academics';
+
     public static function canAccess(): bool
     {
         return auth()->user()->type === 'teacher';
@@ -49,7 +52,7 @@ class ExamResource extends Resource
                             Forms\Components\Select::make('course_id')
                                 ->label('Course')
                                 ->translateLabel()
-                                ->options(Course::all()->pluck('name_with_year_term', 'id'))
+                                ->options(Course::where('teacher_id', auth()->user()->id)->get()->pluck('name_with_year_term', 'id'))
                                 ->preload()
                                 ->searchable()
                                 ->required(),
@@ -69,44 +72,67 @@ class ExamResource extends Resource
                                 ->button()
                                 ->slideOver()
                                 ->form([
-                                    Forms\Components\Grid::make()->schema([
-//                                        select question from to eg from 1 to question 39 max 70 from allways fixed on 1 and to cant be more than 70
-                                        Forms\Components\TextInput::make('from')
-                                            ->label('From')
-                                            ->readOnly()
-                                            ->numeric()
-                                            ->default(1)
-                                            ->required()
-                                            ->minValue(1)
-                                            ->maxValue(70),
-                                        Forms\Components\TextInput::make('to')
-                                            ->label('To')
-                                            ->numeric()
-                                            ->default(70)
-                                            ->required()
-                                            ->minValue(1)
-                                            ->maxValue(70)
-                                            ->validationMessages([
-                                                'max' => __('The to value cannot be more than 70'),
-                                                'min' => __('The to value must be at least 1'),
-                                                'required' => __('The to value is required'),
-                                            ])
+                                    Forms\Components\Wizard::make([
+                                        Forms\Components\Wizard\Step::make('answers')->schema([
+                                            Forms\Components\Grid::make()->schema([
+                                                Forms\Components\Select::make('from')
+                                                    ->label('From')
+                                                    ->options(array_combine(range(1, 70), range(1, 70)))
+                                                    ->live()
+                                                    ->default(1)
+                                                    ->required(),
+                                                Forms\Components\Select::make('to')
+                                                    ->label('To')
+                                                    ->default(70)
+                                                    ->live()
+                                                    ->options(array_combine(range(1, 70), range(1, 70)))
+                                                    ->required()
+                                                    ->validationMessages([
+                                                        'max' => __('The to value cannot be more than 70'),
+                                                        'min' => __('The to value must be at least 1'),
+                                                        'required' => __('The to value is required'),
+                                                    ]),
+                                            ]),
+                                            Forms\Components\FileUpload::make('exam_paper')
+                                                ->label('Exam Paper')
+                                                ->required()
+                                                ->acceptedFileTypes(['image/*'])
+                                                ->columnSpanFull(),
+                                        ]),
+                                        Forms\Components\Wizard\Step::make('scores')->schema([
+                                            Forms\Components\Repeater::make('question')
+                                                ->live()
+                                                ->schema([
+                                                    Forms\Components\Grid::make()->schema([
+                                                        Forms\Components\Select::make('from')
+                                                            ->label('From')
+                                                            ->options(fn($get) => array_combine(range($get('../../from'), $get('../../to')), range($get('../../from'), $get('../../to'))))
+                                                            ->required(),
+                                                        Forms\Components\Select::make('to')
+                                                            ->label('To')
+                                                            ->options(fn($get) => array_combine(range($get('../../from'), $get('../../to')), range($get('../../from'), $get('../../to'))))
+                                                            ->required()
+                                                            ->validationMessages([
+                                                                'max' => __('The to value cannot be more than 70'),
+                                                                'min' => __('The to value must be at least 1'),
+                                                                'required' => __('The to value is required'),
+                                                            ]),
+                                                    ]),
 
+                                                    Forms\Components\TextInput::make('default_score')
+                                                        ->label('Default Score')
+                                                        ->numeric()
+                                                        ->default(0)
+                                                        ->required()
+                                                        ->columnSpanFull(),
+                                                ]),
+                                            //default score
+                                        ])
                                     ]),
-                                    //default score
-                                    Forms\Components\TextInput::make('default_score')
-                                        ->label('Default Score')
-                                        ->numeric()
-                                        ->default(0)
-                                        ->required()
-                                        ->columnSpanFull(),
-                                    Forms\Components\FileUpload::make('exam_paper')
-                                        ->label('Exam Paper')
-                                        ->required()
-                                        ->acceptedFileTypes(['image/*'])
-                                        ->columnSpanFull(),
+
                                 ])
                                 ->action(function ($data, $record, Forms\Set $set) {
+
                                     $process = new Process([
                                         'python',
                                         base_path('app/Python/ocr.py'),
@@ -126,14 +152,42 @@ class ExamResource extends Resource
                                     $paperJson = collect($paperJson['answers']);
                                     $paperJson = $paperJson->take($data['to']);
                                     $paperJson = $paperJson->map(function ($answer) use ($data) {
+                                        $score = 0;
+
+                                        foreach ($data['question'] as $range) {
+                                            if ($answer['id'] >= (int) $range['from'] && $answer['id'] <= (int) $range['to']) {
+                                                $score = (int) $range['default_score'];
+                                                break;
+                                            }
+                                        }
+
                                         return [
                                             'id' => $answer['id'],
                                             'question' => __('Question Number :number', ['number' => $answer['id']]),
                                             'answer' => $answer['answer'],
-                                            'score' => $data['default_score'] ?: 0,
+                                            'score' => $score,
                                         ];
                                     });
+
                                     $set('questions', $paperJson->toArray());
+                                    //notifction of success
+                                    Notification::make()
+                                        ->title(__('Questions Loaded Successfully'))
+                                        ->success()
+                                        ->icon('heroicon-o-check-circle')
+                                        ->send();
+
+                                    //notifaction of error the questions could not be loaded , "where answer is null" if any
+                                    if ($paperJson->where('answer', null)->count() > 0) {
+                                        Notification::make()
+                                            ->title(__('Some questions could not be loaded'))
+                                            ->body( __('Questions with no answers: :questions', ['questions' => $paperJson->where('answer', null)->pluck('id')->join(', ')]))
+                                            ->warning()
+                                            ->icon('heroicon-o-exclamation-circle')
+                                            ->send();
+                                    }
+
+
                                 })
                         )
                         ->reorderable(false)
@@ -146,7 +200,7 @@ class ExamResource extends Resource
                                     ->numeric()
                                     ->required()
                                     ->default(fn(Forms\Get $get) => count($get('../../questions')))
-                                    ->columnSpan(1), // smallest possible
+                                    ->columnSpan(2), // smallest possible
 
                                 Forms\Components\TextInput::make('question')
                                     ->label('Question')
@@ -154,7 +208,7 @@ class ExamResource extends Resource
                                     ->default(fn(Forms\Get $get) => __('Question Number :number', ['number' => count($get('../../questions'))]))
                                     ->required()
                                     ->maxLength(255)
-                                    ->columnSpan(5),
+                                    ->columnSpan(4),
 
                                 Forms\Components\ToggleButtons::make('answer')
                                     ->translateLabel()

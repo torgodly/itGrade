@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -38,6 +39,17 @@ class Exam extends Model implements HasMedia
             'questions' => 'array',
         ];
     }
-
+    protected static function booted(): void
+    {
+        static::addGlobalScope('teacher', function (Builder $query) {
+            if (auth()->hasUser()) {
+                $query->whereHas('course', function (Builder $query) {
+                    $query->where('teacher_id', auth()->user()->id);
+                });
+                // or with a `team` relationship defined:
+//                $query->whereBelongsTo(auth()->user ()->team);
+            }
+        });
+    }
 
 }

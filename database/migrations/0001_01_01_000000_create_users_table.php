@@ -18,6 +18,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('type')->default('teacher'); // 'teacher' or 'admin'
             $table->boolean('is_approved')->default(false);
+            $table->boolean('is_new')->default(true);
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

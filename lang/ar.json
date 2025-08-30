@@ -59,5 +59,10 @@
     "Import Students": "استيراد الطلاب",
     "Course Name": "اسم المادة",
     "Course Term": "الفصل الدراسي للمادة",
-    "Course Academic Year": "السنة الدراسية للمادة"
+    "Course Academic Year": "السنة الدراسية للمادة",
+    "New": "جديد",
+    "Some questions could not be loaded": "بعض الأسئلة لم يتم تحميلها",
+    "Questions Loaded Successfully": "تم تحميل الأسئلة بنجاح",
+    "Questions with no answers: :questions": "أسئلة بدون إجابات: :questions",
+    "Unknown , Check Visually": "غير معروف، تحقق بصريًا"
 }

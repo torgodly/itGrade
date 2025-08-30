@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Builder;
 
 class Course extends Model
 {
@@ -22,5 +23,16 @@ class Course extends Model
     public function getNameWithYearTermAttribute(): string
     {
         return $this->name . ' (' . $this->academic_year . ' - ' . __($this->term) . ')';
+    }
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope('teacher', function (Builder $query) {
+            if (auth()->hasUser()) {
+                $query->where('teacher_id', auth()->user()->id);
+                // or with a `team` relationship defined:
+//                $query->whereBelongsTo(auth()->user ()->team);
+            }
+        });
     }
 }

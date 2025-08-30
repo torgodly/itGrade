@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->text('description')->nullable()->comment('Course description');
             $table->string('term')->comment('Course term');
             $table->string('academic_year')->comment('Academic year');
+            $table->foreignId('teacher_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

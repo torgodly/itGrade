@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\Builder;
 
 class Result extends Model implements HasMedia
 {
@@ -17,6 +18,7 @@ class Result extends Model implements HasMedia
     use InteractsWithMedia;
 
     protected $guarded = ['id'];
+
     public function exam(): BelongsTo
     {
         return $this->belongsTo(Exam::class);
@@ -54,7 +56,7 @@ class Result extends Model implements HasMedia
                 'question_id' => $answer['id'],
                 'question_text' => $correctAnswer['question'] ?? 'Unknown Question',
                 'correct_answer' => $correctAnswer['answer'] ?? 'Unknown',
-                'student_answer' => $answer['answer'],
+                'student_answer' => $answer['answer'] ?? __('Unknown , Check Visually'),
                 'is_correct' => $isCorrect,
             ];
         })->toArray();
@@ -90,5 +92,20 @@ class Result extends Model implements HasMedia
     public function course(): HasOneThrough
     {
         return $this->hasOneThrough(Course::class, Exam::class, 'id', 'id', 'exam_id', 'course_id');
+    }
+
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope('teacher', function (Builder $query) {
+            if (auth()->hasUser()) {
+                $query->whereHas('exam', function (Builder $query) {
+                    $query->whereHas('course', function (Builder $query) {
+                        $query->where('teacher_id', auth()->user()->id);
+                    });
+                });
+
+            }
+        });
     }
 }

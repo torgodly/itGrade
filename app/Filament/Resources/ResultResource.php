@@ -18,11 +18,13 @@ use Icetalker\FilamentTableRepeatableEntry\Infolists\Components\TableRepeatableE
 class ResultResource extends Resource
 {
     use ResourceTranslatedLabels;
+
     protected static ?string $model = Result::class;
 
     protected static ?string $navigationIcon = 'tabler-report';
 
     protected static ?string $navigationGroup = 'Reports';
+
     public static function canAccess(): bool
     {
         return auth()->user()->type === 'teacher';
@@ -50,6 +52,7 @@ class ResultResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+
             ->columns([
                 Tables\Columns\TextColumn::make('exam.name')
                     ->numeric()

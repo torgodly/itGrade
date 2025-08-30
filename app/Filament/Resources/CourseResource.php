@@ -34,6 +34,9 @@ class CourseResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Hidden::make('teacher_id')
+                    ->default(fn() => auth()->id())
+                    ->required(),
                 Forms\Components\Grid::make(3)->schema([
                     Forms\Components\TextInput::make('name')
                         ->required()

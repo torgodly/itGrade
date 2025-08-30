@@ -56,15 +56,25 @@ class UserResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query) => $query->where('type', '!=', 'admin'))
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
-
                 Tables\Columns\TextColumn::make('type')
                     ->searchable(),
-                Tables\Columns\ToggleColumn::make('is_approved'),
+                Tables\Columns\IconColumn::make('is_new')
+                    ->boolean()
+                    ->label('New')
+                ->translateLabel(),
+                Tables\Columns\ToggleColumn::make('is_approved')
+                    ->updateStateUsing(function (User $record, bool $state): void {
+                        $record->is_approved = $state;
+                        $record->is_new = false;
+                        $record->save();
+                    })
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
